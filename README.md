@@ -20,6 +20,12 @@ cd backend
 npm start
 ```
 
+### Run Backend in Development Mode
+```bash
+cd backend
+npm run dev
+```
+
 ## Frontend
 Location: `Frontent/`
 
@@ -29,4 +35,19 @@ Location: `Frontent/`
 
 ## Notes
 - Ensure MySQL is running and the database `hall_management` exists.
-- Update database credentials in `backend/index.js` as needed.
+- Create `backend/.env` from `backend/.env.example` and update the values with your MySQL credentials.
+- Do not commit `backend/.env` because it contains sensitive credentials.
+
+### Create `backend/.env`
+```bash
+cd backend
+copy .env.example .env
+```
+
+### Edit `backend/.env`
+```env
+DB_HOST=127.0.0.1
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=hall_management
+```
