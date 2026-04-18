@@ -34,7 +34,8 @@ Location: `Frontent/`
 - `style.css` - styles
 
 ## Notes
-- Ensure MySQL is running and the database `hall_management` exists.
+- Ensure MySQL is running.
+- The backend can create the database if it does not already exist, as long as the configured MySQL user has permission.
 - Create `backend/.env` from `backend/.env.example` and update the values with your MySQL credentials.
 - Do not commit `backend/.env` because it contains sensitive credentials.
 

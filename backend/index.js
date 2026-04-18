@@ -9,26 +9,62 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Database Connection
+const dbName = process.env.DB_NAME || "hall_management";
 const db = mysql.createConnection({
   host: process.env.DB_HOST || "127.0.0.1",
   user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "1234",
-  database: process.env.DB_NAME || "hall_management",
+  password: process.env.DB_PASSWORD || "",
 });
 
-db.connect((err) => {
-  console.log("Connected to MySQL Database");
-});
+function initDatabase() {
+  db.connect((err) => {
+    if (err) {
+      console.error("MySQL connection error:", err.message);
+      console.error("Please verify backend/.env credentials and that MySQL is running.");
+      process.exit(1);
+    }
+
+    db.query(
+      `CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci`,
+      (createErr) => {
+        if (createErr) {
+          console.error("Failed to create or access database:", createErr.message);
+          process.exit(1);
+        }
+
+        db.changeUser({ database: dbName }, (changeErr) => {
+          if (changeErr) {
+            console.error("Failed to select database:", changeErr.message);
+            process.exit(1);
+          }
+
+          console.log("Connected to MySQL Database");
+          app.listen(3000, () => console.log("Server running on port 3000"));
+        });
+      },
+    );
+  });
+}
 
 // --- AUTH ROUTES ---
 app.post("/register", (req, res) => {
   const { username, password, role } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "Username and password are required." });
+  }
+
   db.query(
     "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
     [username, password, role || "student"],
     (err, result) => {
-      if (err)
-        return res.status(500).json({ error: "Username may already exist." });
+      if (err) {
+        if (err.code === "ER_DUP_ENTRY") {
+          return res.status(409).json({ error: "Username already exists." });
+        }
+        console.error("Registration error:", err);
+        return res.status(500).json({ error: "Failed to register user." });
+      }
       res.json({ message: "Registration successful" });
     },
   );
@@ -216,4 +252,5 @@ app.get("/admin/complaints", (req, res) => {
   });
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+// Server will start after DB connection is initialized
+initDatabase();
