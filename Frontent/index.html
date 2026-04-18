@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall Management Platform</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <nav id="navbar" class="hidden">
+        <h2>YKSG-2 Portal</h2>
+        <div id="nav-links">
+            <button onclick="showSection('dashboard')">Dashboard</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <main id="app-container">
+        <section id="auth-section" class="card">
+            <h2 id="auth-title">Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <select id="role" class="hidden">
+                <option value="student">Student</option>
+                <option value="admin">Admin</option>
+            </select>
+            <button id="auth-btn" onclick="handleAuth()">Login</button>
+            <p onclick="toggleAuthMode()" class="toggle-link">Don't have an account? Register</p>
+        </section>
+
+        <section id="dashboard" class="hidden">
+            <h2>Welcome, <span id="user-display"></span></h2>
+            <div class="grid-options">
+                <div class="card option" onclick="showSection('apply-section')">
+                    <h3>Apply for Room</h3>
+                    <p>Submit your hall application</p>
+                </div>
+                <div class="card option" onclick="loadStudentProfile()">
+                    <h3>Student Profile</h3>
+                    <p>View allocation & complain</p>
+                </div>
+                <div class="card option hidden" id="admin-card" onclick="loadAdminDashboard()">
+                    <h3>Admin Panel</h3>
+                    <p>Manage applications & rooms</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="apply-section" class="hidden card">
+            <h2>Apply for Hall Seat</h2>
+            <input type="text" id="app_student_id" placeholder="Student ID">
+            <input type="email" id="app_email" placeholder="Edu Email">
+            <input type="text" id="app_name" placeholder="Full Name">
+            <input type="text" id="app_dept" placeholder="Department">
+            <input type="text" id="app_semester" placeholder="Semester">
+            <input type="text" id="app_mobile" placeholder="Mobile Number">
+            <input type="text" id="app_blood" placeholder="Blood Group">
+            <button onclick="submitApplication()">Submit Application</button>
+            <button onclick="showSection('dashboard')" class="secondary">Back</button>
+        </section>
+
+        <section id="student-profile" class="hidden card">
+            <h2>My Profile</h2>
+            <div id="profile-details"></div>
+            <hr>
+            <h3>Submit a Complain</h3>
+            <textarea id="complain_text" placeholder="Describe your issue..."></textarea>
+            <button onclick="submitComplain()">Submit</button>
+            
+            <h3>My Complains</h3>
+            <div id="my-complains-list"></div>
+            <button onclick="showSection('dashboard')" class="secondary mt-1">Back</button>
+        </section>
+
+        <section id="admin-section" class="hidden">
+            <button onclick="showSection('dashboard')" class="secondary">Back to Dashboard</button>
+            
+            <div class="card mt-1">
+                <h2>Pending Applications</h2>
+                <div id="admin-applications"></div>
+            </div>
+
+            <div class="card mt-1">
+                <h2>Allocated Students</h2>
+                <div id="admin-students"></div>
+            </div>
+
+            <div class="card mt-1">
+                <h2>All Complains</h2>
+                <div id="admin-complaints"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
